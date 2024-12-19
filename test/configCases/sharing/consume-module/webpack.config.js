@@ -1,4 +1,4 @@
-// eslint-disable-next-line node/no-unpublished-require
+// eslint-disable-next-line n/no-unpublished-require
 const { ConsumeSharedPlugin } = require("../../../../").sharing;
 
 /** @type {import("../../../../").Configuration} */
@@ -54,6 +54,10 @@ module.exports = {
 					requiredVersion: "1.1.0",
 					singleton: true,
 					strictVersion: false
+				},
+				singletonWithoutVersion: {
+					requiredVersion: false,
+					singleton: true
 				}
 			}
 		})

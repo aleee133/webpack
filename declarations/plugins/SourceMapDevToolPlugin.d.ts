@@ -17,11 +17,21 @@ export interface SourceMapDevToolPluginOptions {
 	/**
 	 * Appends the given value to the original asset. Usually the #sourceMappingURL comment. [url] is replaced with a URL to the source map file. false disables the appending.
 	 */
-	append?: (false | null) | string;
+	append?:
+		| (false | null)
+		| string
+		| ((
+				pathData: import("../../lib/Compilation").PathData,
+				assetInfo?: import("../../lib/Compilation").AssetInfo
+		  ) => string);
 	/**
 	 * Indicates whether column mappings should be used (defaults to true).
 	 */
 	columns?: boolean;
+	/**
+	 * Emit debug IDs into source and SourceMap.
+	 */
+	debugIds?: boolean;
 	/**
 	 * Exclude modules that match the given value from source map generation.
 	 */

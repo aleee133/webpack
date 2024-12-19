@@ -18,6 +18,7 @@ export type ExternalsType =
 	| "commonjs"
 	| "commonjs2"
 	| "commonjs-module"
+	| "commonjs-static"
 	| "amd"
 	| "amd-require"
 	| "umd"
@@ -26,6 +27,7 @@ export type ExternalsType =
 	| "system"
 	| "promise"
 	| "import"
+	| "module-import"
 	| "script"
 	| "node-commonjs";
 /**

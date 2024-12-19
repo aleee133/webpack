@@ -17,6 +17,10 @@ export type ExposesItem = string;
  */
 export type ExposesItems = ExposesItem[];
 /**
+ * Add a container for define/require functions in the AMD module.
+ */
+export type AmdContainer = string;
+/**
  * Add a comment in the UMD wrapper.
  */
 export type AuxiliaryComment = string | LibraryCustomUmdCommentObject;
@@ -29,7 +33,7 @@ export type LibraryExport = string[] | string;
  */
 export type LibraryName = string[] | string | LibraryCustomUmdObject;
 /**
- * Type of library (types included by default are 'var', 'module', 'assign', 'assign-properties', 'this', 'window', 'self', 'global', 'commonjs', 'commonjs2', 'commonjs-module', 'amd', 'amd-require', 'umd', 'umd2', 'jsonp', 'system', but others might be added by plugins).
+ * Type of library (types included by default are 'var', 'module', 'assign', 'assign-properties', 'this', 'window', 'self', 'global', 'commonjs', 'commonjs2', 'commonjs-module', 'commonjs-static', 'amd', 'amd-require', 'umd', 'umd2', 'jsonp', 'system', but others might be added by plugins).
  */
 export type LibraryType =
 	| (
@@ -44,6 +48,7 @@ export type LibraryType =
 			| "commonjs"
 			| "commonjs2"
 			| "commonjs-module"
+			| "commonjs-static"
 			| "amd"
 			| "amd-require"
 			| "umd"
@@ -70,6 +75,7 @@ export type ExternalsType =
 	| "commonjs"
 	| "commonjs2"
 	| "commonjs-module"
+	| "commonjs-static"
 	| "amd"
 	| "amd-require"
 	| "umd"
@@ -78,6 +84,7 @@ export type ExternalsType =
 	| "system"
 	| "promise"
 	| "import"
+	| "module-import"
 	| "script"
 	| "node-commonjs";
 /**
@@ -170,6 +177,10 @@ export interface ExposesConfig {
  */
 export interface LibraryOptions {
 	/**
+	 * Add a container for define/require functions in the AMD module.
+	 */
+	amdContainer?: AmdContainer;
+	/**
 	 * Add a comment in the UMD wrapper.
 	 */
 	auxiliaryComment?: AuxiliaryComment;
@@ -182,7 +193,7 @@ export interface LibraryOptions {
 	 */
 	name?: LibraryName;
 	/**
-	 * Type of library (types included by default are 'var', 'module', 'assign', 'assign-properties', 'this', 'window', 'self', 'global', 'commonjs', 'commonjs2', 'commonjs-module', 'amd', 'amd-require', 'umd', 'umd2', 'jsonp', 'system', but others might be added by plugins).
+	 * Type of library (types included by default are 'var', 'module', 'assign', 'assign-properties', 'this', 'window', 'self', 'global', 'commonjs', 'commonjs2', 'commonjs-module', 'commonjs-static', 'amd', 'amd-require', 'umd', 'umd2', 'jsonp', 'system', but others might be added by plugins).
 	 */
 	type: LibraryType;
 	/**

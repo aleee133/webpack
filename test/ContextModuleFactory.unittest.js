@@ -5,7 +5,8 @@ const ContextModuleFactory = require("../lib/ContextModuleFactory");
 
 describe("ContextModuleFactory", () => {
 	describe("resolveDependencies", () => {
-		let factory, memfs;
+		let factory;
+		let memfs;
 		beforeEach(() => {
 			factory = new ContextModuleFactory([]);
 			memfs = createFsFromVolume(new Volume());
@@ -15,7 +16,7 @@ describe("ContextModuleFactory", () => {
 				setTimeout(() => callback(null, ["/file"]));
 			};
 			memfs.stat = (file, callback) => {
-				let err = new Error("fake ENOENT error");
+				const err = new Error("fake ENOENT error");
 				err.code = "ENOENT";
 				setTimeout(() => callback(err, null));
 			};
@@ -39,7 +40,7 @@ describe("ContextModuleFactory", () => {
 				setTimeout(() => callback(null, ["/file"]));
 			};
 			memfs.stat = (file, callback) => {
-				let err = new Error("fake EACCES error");
+				const err = new Error("fake EACCES error");
 				err.code = "EACCES";
 				setTimeout(() => callback(err, null));
 			};
@@ -115,6 +116,44 @@ describe("ContextModuleFactory", () => {
 					expect(res).not.toStrictEqual([]);
 					expect(Array.isArray(res)).toBe(true);
 					expect(res.length).toBe(1);
+					done();
+				}
+			);
+		});
+
+		it("should resolve correctly several resources", done => {
+			memfs.readdir = (dir, callback) => {
+				if (dir === "/a") setTimeout(() => callback(null, ["/B"]));
+				if (dir === "/b") setTimeout(() => callback(null, ["/A"]));
+				if (dir === "/a/B") setTimeout(() => callback(null, ["a"]));
+				if (dir === "/b/A") setTimeout(() => callback(null, ["b"]));
+			};
+			memfs.stat = (file, callback) => {
+				const resolvedValue = {
+					isDirectory: () => file !== "/a/B/a" && file !== "/b/A/b",
+					isFile: () => file === "/a/B/a" || file === "/b/A/b"
+				};
+				setTimeout(() => callback(null, resolvedValue));
+			};
+			memfs.realpath = undefined;
+			factory.resolveDependencies(
+				memfs,
+				{
+					resource: ["/a", "/b"],
+					resourceFragment: "#hash",
+					resourceQuery: "?query",
+					recursive: true,
+					regExp: /.*/
+				},
+				(err, res) => {
+					expect(res).not.toStrictEqual([]);
+					expect(Array.isArray(res)).toBe(true);
+					expect(res.map(r => r.request)).toEqual([
+						"./B/a?query#hash",
+						"./A/b?query#hash"
+					]);
+					expect(res.map(r => r.getContext())).toEqual(["/a", "/b"]);
+					expect(res.map(r => r.userRequest)).toEqual(["./B/a", "./A/b"]);
 					done();
 				}
 			);
