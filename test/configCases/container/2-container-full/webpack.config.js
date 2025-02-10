@@ -1,8 +1,11 @@
-// eslint-disable-next-line node/no-unpublished-require
+// eslint-disable-next-line n/no-unpublished-require
 const { ModuleFederationPlugin } = require("../../../../").container;
 
 /** @type {import("../../../../").Configuration} */
 module.exports = {
+	output: {
+		uniqueName: "2-container-full"
+	},
 	plugins: [
 		new ModuleFederationPlugin({
 			name: "main",

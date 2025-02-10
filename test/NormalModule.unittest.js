@@ -91,6 +91,7 @@ describe("NormalModule", () => {
 		});
 		describe("given a userRequest containing query parameters", () => {
 			it("ignores paths in query parameters", () => {
+				// cspell:word testpath
 				userRequest =
 					"F:\\some\\context\\loader?query=foo\\bar&otherPath=testpath/other";
 				normalModule = new NormalModule({
@@ -118,7 +119,7 @@ describe("NormalModule", () => {
 		describe("given a resource containing a ?-sign", () => {
 			const baseResource = "some/resource";
 			beforeEach(() => {
-				resource = baseResource + "?some=query";
+				resource = `${baseResource}?some=query`;
 				normalModule = new NormalModule({
 					type: "javascript/auto",
 					request,
@@ -193,7 +194,7 @@ describe("NormalModule", () => {
 	});
 
 	describe("#originalSource", () => {
-		let expectedSource = "some source";
+		const expectedSource = "some source";
 		beforeEach(() => {
 			normalModule._source = new RawSource(expectedSource);
 		});
@@ -211,7 +212,7 @@ describe("NormalModule", () => {
 			});
 			describe("and the content starting with the string specified in rule", () => {
 				beforeEach(() => {
-					content = rule + "some-content";
+					content = `${rule}some-content`;
 				});
 				it("returns true", () => {
 					expect(normalModule.shouldPreventParsing(rule, content)).toBe(true);
@@ -232,7 +233,7 @@ describe("NormalModule", () => {
 			});
 			describe("and the content matches the rule", () => {
 				beforeEach(() => {
-					content = rule + "some-content";
+					content = `${rule}some-content`;
 				});
 				it("returns true", () => {
 					expect(normalModule.shouldPreventParsing(rule, content)).toBe(true);
@@ -284,7 +285,7 @@ describe("NormalModule", () => {
 				});
 			});
 			describe("that is an array", () => {
-				describe("of strings and or regexs", () => {
+				describe("of strings and or regexps", () => {
 					let someRules;
 					beforeEach(() => {
 						someRules = ["some rule", /some rule1/, "some rule2"];

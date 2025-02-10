@@ -6,7 +6,7 @@ describe("util/identifier", () => {
 	describe("makePathsRelative", () => {
 		describe("given a context and a pathConstruct", () => {
 			it("computes the correct relative results for the path construct", () => {
-				[
+				for (const [context, pathConstruct, expected] of [
 					[
 						"/some/dir/",
 						"/some/dir/to/somewhere|some/other/dir!../more/dir",
@@ -43,11 +43,11 @@ describe("util/identifier", () => {
 						"./to/somewhere|some/other/dir!../more/dir"
 					],
 					["/dir", "/dir/to/somewhere??ref-123", "./to/somewhere??ref-123"]
-				].forEach(([context, pathConstruct, expected]) => {
+				]) {
 					expect(identifierUtil.makePathsRelative(context, pathConstruct)).toBe(
 						expected
 					);
-				});
+				}
 			});
 		});
 	});
@@ -86,6 +86,36 @@ describe("util/identifier", () => {
 						identifierUtil.getUndoPath(filename, outputPath, enforceRelative)
 					).toBe(expected);
 				}
+			});
+		}
+	});
+
+	describe("parseResourceWithoutFragment", () => {
+		// [input, expectedPath, expectedQuery]
+		/** @type {[string, string, string][]} */
+		const cases = [
+			["path#hash?query", "path#hash", "?query"],
+			["path?query#hash", "path", "?query#hash"],
+			["\0#path\0??\0#query#hash", "#path?", "?#query#hash"],
+			[
+				'./loader.js?{"items":["a\0^","b\0!","c#","d"]}',
+				"./loader.js",
+				'?{"items":["a^","b!","c#","d"]}'
+			],
+			[
+				"C:\\Users\\\0#\\repo\\loader.js?",
+				"C:\\Users\\#\\repo\\loader.js",
+				"?"
+			],
+			["/Users/\0#/repo/loader-\0#.js", "/Users/#/repo/loader-#.js", ""]
+		];
+		for (const case_ of cases) {
+			it(case_[0], () => {
+				const { resource, path, query } =
+					identifierUtil.parseResourceWithoutFragment(case_[0]);
+				expect(case_[0]).toBe(resource);
+				expect(case_[1]).toBe(path);
+				expect(case_[2]).toBe(query);
 			});
 		}
 	});
